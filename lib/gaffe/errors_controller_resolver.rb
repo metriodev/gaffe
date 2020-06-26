@@ -32,6 +32,10 @@ module Gaffe
     def request_controller(controllers)
       matched_controllers = controllers.find do |pattern, _|
         relative_url = @env['REQUEST_URI'] || '/'
+        relative_url.slice! @env['HTTP_HOST']
+        relative_url.slice! 'http://'
+        relative_url.slice! 'https://'
+
         absolute_url = @env['HTTP_HOST'] + relative_url
         [relative_url, absolute_url].any? { |url| (url =~ pattern).present? }
       end
